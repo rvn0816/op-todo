@@ -26,9 +26,9 @@ export class Project {
         this.todoList.push(newTodo);
     };
     
-    removeTask(indexToRemove) {
-        const updatedTodoList = this.todoList.filter((todo, index) => {
-            return index !== indexToRemove;
+    removeTodo(todoID) {
+        const updatedTodoList = this.todoList.filter((todo) => {
+            return todo.id !== todoID;
         });
         this.todoList = updatedTodoList;
     };
