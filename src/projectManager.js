@@ -91,3 +91,5 @@ export class ProjectManager {
         this.#saveToLocalStorage();
     }
 }
+
+export const manager = new ProjectManager();
