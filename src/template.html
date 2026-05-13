@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Planner</title>
+</head>
+<body>
+    <header>
+        <h1>My Tasks</h1>
+    </header>
+
+    <div class="app-container">
+        <!-- Side bar (Project List) -->
+        <aside class="project-list">
+            <h2>Projects</h2>
+            <div id="project-list-container">
+                <!-- UI Controller -->
+            </div>
+            <button id="add-project-btn">+ New Project</button>
+        </aside>
+
+        <!-- Main Content (Todo List) -->
+        <main class="todo-section">
+            <header class="project-header">
+                <h2 id="activve-project-name">Select a Project</h2>
+                <button id="add-todo-btn">+ Add Task</button>
+            </header>
+
+            <div id="todo-list-container">
+                <!-- UI Controller -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Project and Todo Modal -->
+    <dialog id="project-modal">
+        <form id="project-form" method="dialog">
+            <h3>New Project</h3>
+            <input type="text" id="new-project-title" placeholder="Project Name" required>
+            <div class="modal-buttons">
+                <button type="button" id="cancel-project">Cancel</button>
+                <button type="submit" id="confirm-project">Confirm</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="todo-modal">
+        <form id="todo-form" method="dialog">
+            <h3>New Task</h3>
+            <input type="text" id="todo-title" placeholder="Task Title" required>
+            <textarea id="todo-desc" placeholder="Task Description"></textarea>
+            <input type="date" id="todo-date">
+            <select id="todo-priority">
+                <option value="log">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <div class="modal-buttons">
+                <button type="button" id="cancel-todo">Cancel</button>
+                <button type="submit" id="confirm-todo">Add Task</button>
+            </div>
+        </form>
+    </dialog>
+    
+</body>
+</html>
