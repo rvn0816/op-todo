@@ -1,11 +1,16 @@
 import { Todo } from './todo';
 import { Project } from './project';
-import { ProjectManager } from './projectManager';
+import { ProjectManager, manager } from './projectManager';
 
 // Containers
 const projectContainer = document.getElementById('project-list-container');
 const todoContainer = document.getElementById('todo-list-container');
 const activeProjectName = document.getElementById('active-project-name');
+
+const todoModal = document.getElementById('todo-modal');
+const todoForm = document.getElementById('todo-form');
+const addTodoBtn = document.getElementById('add-todo-btn');
+const cancelTodoBtn = document.getElementById('cancel-todo-btn');
 
 // Render Functions
 export function renderApp() {
@@ -49,7 +54,7 @@ function renderTodoList() {
                 <h3>${todo.title}</h3>
                 <p>${todo.dueDate}</p>
                 <ul class="checklist-container">
-                    ${todo.checklist.map((item, index) => {`
+                    ${todo.checklist.map((item, index) => `
                         <li class="checklist-item">
                             <input type="checkbox"
                                     class="toggle-check"
@@ -58,7 +63,7 @@ function renderTodoList() {
                                     ${item.completed ? 'checked' : ''}>
                             <span>${item.text}</span>
                         </li>
-                    `}).join('')}
+                    `).join('')}
                 </ul>
             </div>
             <div class="todo-actions">
@@ -78,3 +83,29 @@ if (deleteBtn) {
     manager.removeTodoFromActive(todoID);
     renderApp();
 }
+
+// ---- todo modal ----
+// open modal
+addTodoBtn.addEventListener('click', () => {
+    todoModal.showModal();
+});
+
+//close modal
+cancelTodoBtn.addEventListener('click', () => {
+    todoForm.reset();
+    todoModal.close();
+});
+
+// submit form - add new todo
+todoForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(todoForm);
+    const todoData = Object.fromEntries(formData.entries());
+
+    manager.addTodoToActive(todoData);
+
+    todoForm.reset();
+    todoModal.close();
+    renderApp();
+});
