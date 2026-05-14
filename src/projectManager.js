@@ -90,6 +90,23 @@ export class ProjectManager {
         this.activeProject.removeTodo(todoID);
         this.#saveToLocalStorage();
     }
+
+    toggleTodoInActive(todoID, itemIndex = null) {
+        if (!this.activeProject) return;
+
+        const targetTodo = this.activeProject.todoList.find(todo => todo.id === todoID);
+
+        if (targetTodo) {
+            if (itemIndex !== null) {
+                // checklist item toggle
+                targetTodo.toggleCheckListItem(itemIndex);
+            } else {
+                // main task toggle
+                targetTodo.toggleComplete();
+            }
+            this.#saveToLocalStorage();
+        }
+    }
 }
 
 export const manager = new ProjectManager();

@@ -38,4 +38,11 @@ export class Todo {
     updatePriority(newPriority) {
         this.priority = newPriority;
     }
+
+    toggleCheckListItem(index) {
+        const item = this.checklist[index];
+        if (item) {
+            item.completed = !item.completed;
+        }
+    }
 }

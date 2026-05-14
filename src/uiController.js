@@ -28,8 +28,10 @@ function renderSidebar() {
         btn.classList.add('project-btn');
 
         // get the active project displayed
-        const isActive = project.id === projectManager.activeProject?.id;
-        projectElement.classList.toggle('active-project', isActive);
+        const isActive = project.id === manager.activeProject?.id;
+        if (isActive) {
+            btn.classList.add('active-project');
+        }
 
         // Attach ID for the event listener
         btn.dataset.projectID = project.id;
@@ -75,14 +77,31 @@ function renderTodoList() {
     });
 }
 
-// delete Todo
-const deleteBtn = event.target.closest('.delete-todo');
+// event listeners
+todoContainer.addEventListener('click', (event) => {
+    // completed todo
+    const toggleCheck = event.target.closest('.toggle-check');
 
-if (deleteBtn) {
-    const todoID = deleteBtn.dataset.id;
-    manager.removeTodoFromActive(todoID);
-    renderApp();
-}
+    if (toggleCheck) {
+        const todoID = toggleCheck.dataset.todoId;
+        const itemIndex = toggleCheck.dataset.index;
+
+        manager.toggleTodoInActive(
+            todoID, 
+            itemIndex !== undefined ? Number(itemIndex) : null);
+
+        renderApp();
+    }
+
+    // delete todo
+    const deleteBtn = event.target.closest('.delete-todo');
+
+    if (deleteBtn) {
+        const todoID = deleteBtn.dataset.id;
+        manager.removeTodoFromActive(todoID);
+        renderApp();
+    }
+});
 
 // ---- todo modal ----
 // open modal
