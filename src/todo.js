@@ -1,34 +1,32 @@
 export class Todo {
     static fromJSON(data) {
-        const todo = new Todo(
-            data.title,
-            data.description, 
-            data.dueDate, 
-            data.priority, 
-            data.notes, 
-            data.checklist
-        );
-        todo.id = data.id;
-        todo.completed = data.completed;
+        const todo = new Todo({
+            ...data,
+            id: data.id
+        });
         return todo;
     }
 
-    constructor(
+    constructor({
         title, 
         description, 
         dueDate, 
         priority, 
         notes = '', 
-        checklist =[]
-    ) {
-        this.id = Date.now().toString();
+        checklist =[],
+        id = Date.now().toString(),
+        completed = false
+    }) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.notes = notes;
         this.checklist = checklist;
-        this.completed = false;
+        this.id = id;
+        this.completed = completed;
+
+        this.checklist = checklist.map(item => typeof item === 'string' ? { text: item, completed: false } : item);
     }
 
     toggleComplete() {

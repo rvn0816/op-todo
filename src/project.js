@@ -1,29 +1,21 @@
 import { Todo } from './todo';
 
 export class Project {
-    constructor(projectName, todoList = []) {
-        this.projectName = projectName,
-        this.todoList = todoList
-    };
+    static fromJSON(data) {
+        const todos = data.todoList.map(todoData => Todo.fromJSON(todoData));
+        return new Project(data.projectName, todos, data.id);
+    }
 
-    addTodo(
-        title, 
-        description, 
-        dueDate, 
-        priority, 
-        notes, 
-        checklist
-    ) {
-        const newTodo = new Todo(
-            title, 
-            description, 
-            dueDate, 
-            priority, 
-            notes, 
-            checklist
-        );
+    constructor(projectName, todoList = [], id = Date.now().toString()) {
+        this.projectName = projectName;
+        this.todoList = todoList;
+        this.id = id;
+    }
 
+    addTodo(todoData) {
+        const newTodo = new Todo(todoData);
         this.todoList.push(newTodo);
+        return newTodo;
     };
     
     removeTodo(todoID) {

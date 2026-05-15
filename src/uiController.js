@@ -51,6 +51,9 @@ function renderTodoList() {
         const todoCard = document.createElement('div');
         todoCard.classList.add('todo-card');
 
+        const priorityClass = todo.priority.toLowerCase() === 'high' ? 'high-priority' : todo.priority.toLowerCase() === 'medium' ? 'medium-priority' : 'low-priority';
+        todoCard.classList.add(priorityClass);
+
         todoCard.innerHTML = `
             <div class="todo-info">
                 <h3>${todo.title}</h3>
@@ -69,12 +72,19 @@ function renderTodoList() {
                 </ul>
             </div>
             <div class="todo-actions">
+                <button class="edit-todo" data-id="${todo.id}">Edit</button>
                 <button class="delete-todo" data-id="${todo.id}">Delete</button>
             </div>
         `;
 
         todoContainer.appendChild(todoCard);
     });
+}
+
+// delete project
+function handleDeleteProject(projectID) {
+    manager.deleteProject(projectID);
+    renderApp();
 }
 
 // event listeners
@@ -93,6 +103,39 @@ todoContainer.addEventListener('click', (event) => {
         renderApp();
     }
 
+    // edit btn
+    const editBtn = event.target.closest('.edit-todo');
+
+    if (editBtn) {
+        const todoID = editBtn.dataset.id;
+        const todoToEdit = manager.activeProject.todoList.find(todo => todo.id === todoID);
+
+        if (todoToEdit) {
+            document.getElementById('todo-title').value =todoToEdit.title;
+            document.getElementById('todo-description').value = todoToEdit.description;
+            document.getElementById('todo-due-date').value = todoToEdit.dueDate;
+            document.getElementById('todo-priority').value = todoToEdit.priority;
+
+            // clear existing checklist inputs
+            const checklistInputsContainer = document.getElementById('checklist-inputs');
+            checklistInputsContainer.innerHTML = '';
+
+            // populate checklist inputs
+            todoToEdit.checklist.forEach(item => {
+                const checklistItemDiv = document.createElement('div');
+                checklistItemDiv.classList.add('checklist-item');
+
+                checklistItemDiv.innerHTML = `
+                    <input type="text" value="${item.text}" class="checklist-item-input">
+                `;
+
+                checklistInputsContainer.appendChild(checklistItemDiv);
+            });
+
+            todoModal.showModal();
+        }
+    }
+
     // delete todo
     const deleteBtn = event.target.closest('.delete-todo');
 
@@ -106,6 +149,13 @@ todoContainer.addEventListener('click', (event) => {
 // ---- todo modal ----
 // open modal
 addTodoBtn.addEventListener('click', () => {
+    // clear hidden ID to ensure we're in "add" mode
+    document.getElementById('edit-todo-id').value = '';
+
+    // clear checklist container for new todo
+    document.getElementById('checklist-inputs').innerHTML = '';
+
+    todoForm.reset();
     todoModal.showModal();
 });
 
@@ -119,12 +169,49 @@ cancelTodoBtn.addEventListener('click', () => {
 todoForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
+    // 1. Grab the hidden ID field to determine if we're editing or adding
+    const editID = document.getElementById('edit-todo-id').value;
+
+    // 2. Collect form data
     const formData = new FormData(todoForm);
     const todoData = Object.fromEntries(formData.entries());
 
-    manager.addTodoToActive(todoData);
+    // 3. Collect checklist items
+    const checklistItems = todoForm.querySelectorAll('.checklist-item-input');
+    todoData.checklist = Array.from(checklistItems).map(input => ({
+        text: input.value,
+        completed: false
+    }));
 
+    // 4. Determine if we're editing or adding
+    if (editID) {
+        manager.updateTodoInActive(editID, todoData);
+    } else {
+        manager.addTodoToActive(todoData);
+    }
+
+    // 5. Reset form and close modal
     todoForm.reset();
+    document.getElementById('edit-todo-id').value = '';
     todoModal.close();
+
+    // 6. Re-render the app to reflect changes
     renderApp();
+});
+
+// --- checklist item input ---
+// 1. Grab the elements related to checklist items
+const addChecklistItemBtn = document.getElementById('add-checklist-item-btn');
+const checklistInputsContainer = document.getElementById('checklist-inputs');
+
+// 2. Click event to add new checklist item input
+addChecklistItemBtn.addEventListener('click', () => {
+    const checklistItemDiv = document.createElement('div');
+    checklistItemDiv.classList.add('checklist-item');
+
+    checklistItemDiv.innerHTML = `
+        <input type="text" placeholder="Enter sub-task" class="checklist-item-input">
+        <button type="button" class="remove-step-btn">Remove</button>
+    `;
+    checklistInputsContainer.appendChild(checklistItemDiv);
 });

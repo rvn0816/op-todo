@@ -47,15 +47,27 @@
 
     <dialog id="todo-modal">
         <form id="todo-form" method="dialog">
+            <input type="hidden" id="edit-todo-id" name="id">
+            
             <h3>New Task</h3>
             <input type="text" name="title" id="todo-title" placeholder="Task Title" required>
             <textarea name="description" id="todo-desc" placeholder="Task Description"></textarea>
             <input type="date" name="dueDate" id="todo-date">
+            
             <select name="priority" id="todo-priority">
                 <option value="log">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
             </select>
+            
+            <div id="checklist-items-container">
+                <h4>Checklist</h4>
+                <div id="checklist-inputs">
+                    <!-- Render thru UI Controller -->
+                </div>
+                <button type="button" id="add-checklist-item-btn">Add Sub-task</button>
+            </div>
+            
             <div class="modal-buttons">
                 <button type="button" id="cancel-todo">Cancel</button>
                 <button type="submit" id="confirm-todo">Add Task</button>
